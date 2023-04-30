@@ -18,28 +18,48 @@
     });
   }
   function loadBingMapsAPI() {
-    return new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = `https://www.bing.com/api/maps/mapcontrol?key=${bingApiKey}`;
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = `http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=${bingApiKey}`;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+
+    const waitForMicrosoftMaps = () => {
+      if (typeof Microsoft !== "undefined" && typeof Microsoft.Maps.Map !== "undefined") {
         resolve(true);
-      };
-      document.head.appendChild(script);
-    });
-  }
+      } else {
+        setTimeout(waitForMicrosoftMaps, 100);
+      }
+    };
+
+    waitForMicrosoftMaps();
+  });
+}
+
+  function waitForMicrosoftNamespace(): Promise<void> {
+  return new Promise<void>((resolve) => {
+    const interval = setInterval(() => {
+      if (typeof Microsoft !== "undefined") {
+        clearInterval(interval);
+        resolve();
+      }
+    }, 100);
+  });
+}
+
 
   onMount(async () => {
     console.log("Loading Google Maps API...");
     await loadGoogleMapsAPI();
     console.log("Google Maps API loaded!");
     await loadBingMapsAPI();
+    await waitForMicrosoftNamespace();
     console.log("Bing Maps API loaded!");
     initMaps();
   });
 
-  function initMaps(): void {
+  async function initMaps(): Promise<void> {
     console.log("Initializing maps...");
     const mapOptions: google.maps.MapOptions = {
       zoom: 16,
@@ -56,14 +76,36 @@
         center: {lat:47.09608780316091,lng:37.548594984979225, } // Mariupol Drama theater
       }
     );
-    console.log("Initializing map done!");
+    console.log("Initializing Google map done!");
 
-    const bingMapOptions = {
-      center: new Microsoft.Maps.Location(47.09608780316091, 37.548594984979225),
-      zoom: 16,
-      mapTypeId: Microsoft.Maps.MapTypeId.aerial,
-    };
-    const bingMap = new Microsoft.Maps.Map(document.getElementById("bingMap"), bingMapOptions);
+    console.log("Initializing map... new Microsoft.Maps.Map()");
+    await new Promise<void>((resolve) => {
+      const bingMapOptions = {
+          center: new Microsoft.Maps.Location(47.09608780316091, 37.548594984979225),
+          zoom: 16,
+          mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+          credentials: bingApiKey,
+        };
+        console.log(bingMapOptions);
+        mapBottom = new Microsoft.Maps.Map('#mapBottom', bingMapOptions);
+        resolve();
+
+
+    // Microsoft.Maps.loadModule("Microsoft.Maps.Map", {
+    //   callback: () => {
+    //     const bingMapOptions = {
+    //       center: new Microsoft.Maps.Location(47.09608780316091, 37.548594984979225),
+    //       zoom: 16,
+    //       mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+    //       credentials: bingApiKey,
+    //     };
+    //     console.log(bingMapOptions);
+    //     mapBottom = new Microsoft.Maps.Map('#mapBottom', bingMapOptions);
+    //     resolve();
+    //   },
+    // });
+  });
+    console.log("Initializing Bing map done!");
 
 
     mapTop.addListener('click', (event) => {
@@ -82,6 +124,8 @@
     const center = new google.maps.LatLng(lat, lng);
     mapTop.setCenter(center);
     mapTop.setZoom(zoom || 18);
+    mapBottom.setView({center: new Microsoft.Maps.Location(lat, lng)});
+    mapBottom.setView({zoom: zoom || 18});
   }
 </script>
 
@@ -93,7 +137,7 @@
   <select class = "select w-1/4" size="5" value="1"
   on:change="{(event) => {
     const target = event.target;
-    const [lat, lng, zoom] = target.value.split(',').map(Number);
+    const [lat, lng, zoom] = target.value.split(',').map(Number)||[47.09608780316091,37.548594984979225, 16];
     goToLocation(lat, lng, zoom);
   }}"
 >
@@ -112,7 +156,7 @@
   <div class="flex flex-col w-full h-full justify-center items-center">
     <!-- Map container: -->
     <div id="mapTop" class="w-full h-1/2 border-red"></div>
-    <div id="mapBottom" class="w-full h-1/2 border-green"></div>
+    <div id="mapBottom" class="w-full h-1/2 border"></div>
   </div>
 
 </div>
