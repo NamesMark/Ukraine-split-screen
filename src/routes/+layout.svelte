@@ -6,18 +6,51 @@
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { Modal, modalStore } from '@skeletonlabs/skeleton';
+	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
+	import Map from '$lib/Map.svelte';
+
+	// const donateModalComponent : ModalComponent = {
+	// 	ref: 'donateModalComponent',
+	// 	props: { ' },
+	// 	slot: '<p></p>'
+	//   };
+
+	const donate: ModalSettings = {
+					type: 'alert',
+					title: 'Help Ukraine',
+					image: '/vilni_request.jpg',
+					body: '<p>Vilni Volunteers are collecting 27,000 USD to buy 9x DJI Mavic 3, 2x monoculars and a generator for 30th and 46th brigades stationed in Bakhmut. I\'m trying to help them, so if you like this website, donate to these awesome guys.</p>' 
+					+'<p class="my-4">💰Paypal: marynaboroda123@gmail.com</p>'
+					+ '<p class="content-center space-x-2 my-4"><a class="btn variant-ghost-tertiary" href = "https://send.monobank.ua/jar/X9BLcbXJu" target="_blank">Monobank jar</a>' 
+					+ '<a class="btn variant-ghost-tertiary" href = "https://www.instagram.com/p/Coribcstakg/" target="_blank">Learn more</a>'
+					+ '<a class="btn variant-ghost-surface" href = "https://linkpeak.io/l/helpukraine" target="_blank"">Other charities</a></p>', 
+				  };
+
+
 
 </script>
 
 <!-- App Shell -->
 <AppShell>
+	
 	<svelte:fragment slot="header">
+		<Modal let:modalStore />
 		<!-- App Bar -->
 		<AppBar>
 			<svelte:fragment slot="lead">
 				<strong class="text-xl uppercase">Ukraine Before and After</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
+				<button
+				class="btn btn-sm variant-ghost-surface"
+				on:click={() => {
+					console.log('Donate modal');
+				  modalStore.trigger(donate);
+				}}
+			  >
+				Donate
+			  </button>
 				<a
 					class="btn btn-sm variant-ghost-surface"
 					href="https://twitter.com/KnightMirko"

@@ -50,24 +50,24 @@
 
 
   onMount(async () => {
-    console.log("Loading Google Maps API...");
+    //console.log("Loading Google Maps API...");
     await loadGoogleMapsAPI();
-    console.log("Google Maps API loaded!");
+    //console.log("Google Maps API loaded!");
     await loadBingMapsAPI();
     await waitForMicrosoftNamespace();
-    console.log("Bing Maps API loaded!");
+    //console.log("Bing Maps API loaded!");
     initMaps();
   });
 
   async function initMaps(): Promise<void> {
-    console.log("Initializing maps...");
+    //console.log("Initializing maps...");
     const mapOptions: google.maps.MapOptions = {
       zoom: 16,
       mapTypeId: "satellite",
       disableDefaultUI: true,
     };
 
-    console.log("Initializing map... new google.maps.Map()");
+    //console.log("Initializing map... new google.maps.Map()");
     mapTop = new google.maps.Map(
       document.getElementById("mapTop") as HTMLElement,
       {
@@ -76,9 +76,9 @@
         center: {lat:47.09608780316091,lng:37.548594984979225, } // Mariupol Drama theater
       }
     );
-    console.log("Initializing Google map done!");
+    //console.log("Initializing Google map done!");
 
-    console.log("Initializing map... new Microsoft.Maps.Map()");
+    //console.log("Initializing map... new Microsoft.Maps.Map()");
     await new Promise<void>((resolve) => {
       const bingMapOptions = {
           center: new Microsoft.Maps.Location(47.09608780316091, 37.548594984979225),
@@ -89,11 +89,11 @@
           showDashboard: false,
           showLocateMeButton: false,
         };
-        console.log(bingMapOptions);
+        //console.log(bingMapOptions);
         mapBottom = new Microsoft.Maps.Map('#mapBottom', bingMapOptions);
         resolve();
   });
-    console.log("Initializing Bing map done!");
+    //console.log("Initializing Bing map done!");
 
 
     mapTop.addListener('click', (event) => {
@@ -139,7 +139,9 @@
 </script>
 
 <style>
-
+  select:focus {
+    outline: none;
+  }
 </style>
 
 <div class = "flex w-full h-full">
