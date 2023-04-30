@@ -1,38 +1,23 @@
-# create-svelte
+# Ukraine before and after russia
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+I wanted to have a convenient comparison for a long time. Now the grim maps are here.
 
-## Creating a project
+# Date range
 
-If you're seeing this, you've probably already done this step. Congrats!
+It's estimated that the Google map (above) is ~ April 1st 2022 (middle of Mariupol siege), Bing map (below) sometime pre-war.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+# Known problems
 
-# create a new project in my-app
-npm create svelte@latest my-app
+Sometimes the Bing map won't load on the first page load, so please try refreshing the page.
+
+# Add new places
+
+Currently adding new places is manual. Send interesting or useful places to me on Twitter, and I'll add them. The preferred format is like this:
 ```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+<option value="47.09608780316091,37.548594984979225,15">Drama Theater</option>
 ```
+, where 47.09608780316091,37.548594984979225 are coordinates as seen in any Google Maps URL, and '15' is an optional parameter for your preferred zoom level (as close as possible, but all important things are visible)
 
-## Building
+# Risks
 
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+This could get broken at any time with new updates of Satellite info of either Google or Bing. Make screenshots while you can.
