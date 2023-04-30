@@ -12,7 +12,6 @@
 <!-- App Shell -->
 <AppShell>
 	<svelte:fragment slot="header">
-		<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC25X4cjAuNQF4JTN4A2hF_HWSOzBimPNU&callback=initMap"></script>
 		<!-- App Bar -->
 		<AppBar>
 			<svelte:fragment slot="lead">

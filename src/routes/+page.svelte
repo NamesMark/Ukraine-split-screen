@@ -6,10 +6,12 @@
   </script>
 <main>
 
-	<div class="container h-full mx-auto flex justify-center items-center">
+	<div class="container h-screen mx-auto flex flex-col justify-center items-center">
+		<div class="py-5">
 		<h1>Ukraine Satellite Imagery Comparison</h1>
+		</div>
 		{#if browser}
-			<Map />
+		  <Map />
 		{/if}
 	</div>
 </main>
