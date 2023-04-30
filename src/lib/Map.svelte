@@ -20,7 +20,7 @@
   function loadBingMapsAPI() {
   return new Promise((resolve) => {
     const script = document.createElement("script");
-    script.src = `http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=${bingApiKey}`;
+    script.src = `https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=${bingApiKey}`;
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
@@ -164,8 +164,8 @@
 </select>
   <div class="flex flex-col w-full h-full justify-center items-center">
     <!-- Map container: -->
-    <div id="mapTop" class="w-full h-1/2 border-red"></div>
-    <div id="mapBottom" class="w-full h-1/2 border"></div>
+    <div id="mapTop" class="w-full h-1/2"></div>
+    <div id="mapBottom" class="w-full h-1/2"></div>
   </div>
 
 </div>
