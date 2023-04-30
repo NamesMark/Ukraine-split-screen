@@ -85,25 +85,13 @@
           zoom: 16,
           mapTypeId: Microsoft.Maps.MapTypeId.aerial,
           credentials: bingApiKey,
+          showCopyright: false,
+          showDashboard: false,
+          showLocateMeButton: false,
         };
         console.log(bingMapOptions);
         mapBottom = new Microsoft.Maps.Map('#mapBottom', bingMapOptions);
         resolve();
-
-
-    // Microsoft.Maps.loadModule("Microsoft.Maps.Map", {
-    //   callback: () => {
-    //     const bingMapOptions = {
-    //       center: new Microsoft.Maps.Location(47.09608780316091, 37.548594984979225),
-    //       zoom: 16,
-    //       mapTypeId: Microsoft.Maps.MapTypeId.aerial,
-    //       credentials: bingApiKey,
-    //     };
-    //     console.log(bingMapOptions);
-    //     mapBottom = new Microsoft.Maps.Map('#mapBottom', bingMapOptions);
-    //     resolve();
-    //   },
-    // });
   });
     console.log("Initializing Bing map done!");
 
@@ -117,6 +105,27 @@
       console.log(`${clickedLat},${clickedLng}`);
       console.log(`Current zoom: ${currentZoom}`);
     });
+
+    mapTop.addListener('center_changed', () => {
+    const center = mapTop.getCenter();
+    const lat = center.lat();
+    const lng = center.lng();
+    mapBottom.setView({ center: new Microsoft.Maps.Location(lat, lng) });
+  });
+
+  mapTop.addListener('zoom_changed', () => {
+    const zoom = mapTop.getZoom();
+    mapBottom.setView({ zoom: zoom });
+  });
+
+  Microsoft.Maps.Events.addHandler(mapBottom, 'viewchangeend', () => {
+  const center = mapBottom.getCenter();
+  const lat = center.latitude;
+  const lng = center.longitude;
+  const zoom = mapBottom.getZoom();
+  mapTop.setCenter(new google.maps.LatLng(lat, lng));
+  mapTop.setZoom(zoom);
+});
 
   }
 
