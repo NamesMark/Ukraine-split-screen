@@ -31,6 +31,23 @@
 
 </script>
 
+<svelte:head>
+	<title>Ukraine Satellite Imagery Comparison</title>
+	<meta name="description" content="See the scars on the cities of Ukraine before and after the conflict." />
+
+	<meta property="og:title" content="Ukraine Satellite Imagery Comparison" />
+	<meta property="og:description" content="See the scars on the cities of Ukraine before and after the conflict." />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://ukraine-split-screen.vercel.app/" />
+	<meta property="og:image" content="https://pbs.twimg.com/media/FvAChcwXsAASrxF?format=jpg&name=large" />
+	<meta property="og:site_name" content="Ukraine Before and After" />
+
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Ukraine Satellite Imagery Comparison" />
+	<meta name="twitter:description" content="See the scars on the cities of Ukraine before and after the conflict." />
+	<meta name="twitter:image" content="https://pbs.twimg.com/media/FvAChcwXsAASrxF?format=jpg&name=large" />
+</svelte:head>
+
 <!-- App Shell -->
 <AppShell>
 	
