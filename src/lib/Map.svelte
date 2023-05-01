@@ -154,15 +154,17 @@
 >
   
   <option disabled>Select a location:</option>
-  <option value="47.09608780316091,37.548594984979225">Drama Theater</option>
-  <option value="47.13898178118376,37.48489740832877,16">Starokrymske Cemetery</option>
+  <option value="47.09608780316091,37.548594984979225">Drama theater</option>
+  <option value="47.13898178118376,37.48489740832877,16">Starokrymske cemetery</option>
   <option value="47.11829043232631,37.50278803007427">Metro store bread line</option>
-  <option value="47.098173121798325,37.50222027265384,17">Epicentr K Mall</option>
+  <option value="47.098173121798325,37.50222027265384,17">Epicentr K mall</option>
   <option value="47.1271484,37.6859701,19">Child Clinic</option>
-  <option value="47.15182764443729,37.608116383840496,19">Maternity Hospital</option>
+  <option value="47.15182764443729,37.608116383840496,19">Maternity hospital</option>
   <option value="47.0928687,37.5575726,19">History museum</option>
   <option value="47.0934991,37.5507241,19">Kuindzhi museum</option>
-  <option value="50.58858316087714,30.209800244624148,16">Antonov Airport (Hostomel)</option>
+  <option value="50.58858316087714,30.209800244624148,16">Antonov airport (Hostomel)</option>
+  <option value="47.073021957525,37.29967261999493,18">350 unknown graves, some filled</option>
+  <option value="47.07496052993682,37.35484725751761,17">Firing positions</option>
 </select>
   <div class="flex flex-col w-full h-full justify-center items-center">
     <!-- Map container: -->
