@@ -12,7 +12,7 @@ Sometimes the Bing map won't load on the first page load, so please try refreshi
 
 # Add new places
 
-Currently adding new places is manual. Send interesting or useful places to me on Twitter, and I'll add them. The preferred format is like this:
+Currently adding new places is manual. Either sumbit a PR, or send interesting or useful places to me on [Twitter](https://twitter.com/KnightMirko), and I'll add them. The preferred format is like this:
 ```
 <option value="47.09608780316091,37.548594984979225,15">Drama Theater</option>
 ```
