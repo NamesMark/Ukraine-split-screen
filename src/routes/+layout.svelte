@@ -58,6 +58,12 @@
 				<strong class="text-xl uppercase">Ukraine Before and After</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
+				<a
+					class="btn btn-sm variant-ghost-surface"
+					href="/about"
+				>
+					About
+				</a>
 				<button
 				class="btn btn-sm variant-ghost-surface"
 				on:click={() => {
