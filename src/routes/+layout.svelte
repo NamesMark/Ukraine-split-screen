@@ -7,6 +7,7 @@
 	import '../app.postcss';
 	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 	import { Modal, modalStore } from '@skeletonlabs/skeleton';
+	import { Toast, toastStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
 	import Map from '$lib/Map.svelte';
 
@@ -53,6 +54,7 @@
 	
 	<svelte:fragment slot="header">
 		<Modal let:modalStore />
+		<Toast />
 		<!-- App Bar -->
 		<AppBar>
 			<svelte:fragment slot="lead">
