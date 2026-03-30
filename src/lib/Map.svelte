@@ -12,6 +12,7 @@
   let suggestDescription = '';
   let submitting = false;
   let submitCooldown = false;
+  let fullscreen = false;
 
   function loadGoogleMapsAPI() {
     return new Promise((resolve) => {
@@ -124,6 +125,15 @@
     mapBottom.setView({zoom: zoom || 18});
   }
 
+  function toggleFullscreen(): void {
+    fullscreen = !fullscreen;
+    // trigger map resize after layout change
+    setTimeout(() => {
+      google.maps.event.trigger(mapTop, 'resize');
+      mapBottom.setView({ center: mapBottom.getCenter() });
+    }, 50);
+  }
+
   async function saveScreenshot(): Promise<void> {
     const center = mapTop.getCenter();
     const lat = center.lat();
@@ -148,14 +158,17 @@
         img.src = url;
       });
 
-      const [googleImg, bingImg] = await Promise.all([loadImg(googleUrl), loadImg(bingUrl)]);
+      const googleImg = await loadImg(googleUrl);
+      let bingImg: HTMLImageElement | null = null;
+      try { bingImg = await loadImg(bingUrl); } catch { /* proxy may be down */ }
 
+      const totalHeight = bingImg ? height * 2 : height;
       const canvas = document.createElement('canvas');
       canvas.width = width;
-      canvas.height = height * 2;
+      canvas.height = totalHeight;
       const ctx = canvas.getContext('2d')!;
       ctx.drawImage(googleImg, 0, 0, width, height);
-      ctx.drawImage(bingImg, 0, height, width, height);
+      if (bingImg) ctx.drawImage(bingImg, 0, height, width, height);
 
       const ts = Date.now();
       const filename = `ukraine-${lat.toFixed(4)}-${lng.toFixed(4)}-z${zoom}-${ts}.png`;
@@ -165,9 +178,11 @@
       link.href = canvas.toDataURL('image/png');
       link.click();
 
-      const done: ToastSettings = { message: 'Screenshot saved!', background: 'variant-filled-success' };
+      const msg = bingImg ? 'Screenshot saved!' : 'Screenshot saved (Google only).';
+      const done: ToastSettings = { message: msg, background: 'variant-filled-success' };
       toastStore.trigger(done);
     } catch (e) {
+      console.error('Screenshot failed:', e);
       const err: ToastSettings = { message: 'Screenshot capture failed. Check your Google Maps API key.', background: 'variant-filled-warning' };
       toastStore.trigger(err);
     }
@@ -183,11 +198,17 @@
     const zoom = mapTop.getZoom();
 
     const title = `📍 Location suggestion: ${suggestName.trim()}`;
+    const optionLine = `<option value="${lat},${lng},${zoom}">${suggestName.trim()}</option>`;
     const body = [
       `**Coordinates:** ${lat}, ${lng}`,
       `**Zoom:** ${zoom}`,
       `**Description:** ${suggestDescription.trim() || 'N/A'}`,
       `**Google Maps link:** https://www.google.com/maps/@${lat},${lng},${zoom}z`,
+      ``,
+      `**Code to add to Map.svelte:**`,
+      '```html',
+      optionLine,
+      '```',
     ].join('\n');
 
     try {
@@ -218,13 +239,16 @@
   }
 </script>
 
+<svelte:window on:keydown={(e) => { if (e.key === 'Escape' && fullscreen) toggleFullscreen(); }} />
+
 <style>
   select:focus {
     outline: none;
   }
 </style>
 
-<div class="flex w-full h-full">
+<div class="flex w-full h-full" class:fixed={fullscreen} class:inset-0={fullscreen} class:z-40={fullscreen}>
+  {#if !fullscreen}
   <div class="flex flex-col w-1/4">
     <select class="select" size="12" value="1"
     on:change="{(event) => {
@@ -250,9 +274,14 @@
     <div class="flex flex-col gap-2 mt-4 w-full px-1">
       <button class="btn btn-sm variant-filled-primary w-full" on:click={() => { showSuggestModal = true; }}>📍 Suggest Location</button>
       <button class="btn btn-sm variant-filled-secondary w-full" id="screenshotBtn" on:click={saveScreenshot}>📸 Save Screenshot</button>
+      <button class="btn btn-sm variant-filled-surface w-full" on:click={toggleFullscreen}>⛶ Fullscreen</button>
     </div>
   </div>
-  <div class="flex flex-col w-full h-full justify-center items-center">
+  {/if}
+  <div class="flex flex-col w-full h-full justify-center items-center relative">
+    {#if fullscreen}
+    <button class="btn btn-sm variant-filled-surface absolute top-2 left-2 z-10 opacity-75 hover:opacity-100" on:click={toggleFullscreen}>✕ Exit</button>
+    {/if}
     <!-- Map container: -->
     <div id="mapTop" class="w-full h-1/2"></div>
     <div id="mapBottom" class="w-full h-1/2"></div>
