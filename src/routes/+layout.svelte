@@ -75,6 +75,14 @@
 				>
 					Twitter
 				</a>
+				<a
+					class="btn btn-sm variant-ghost-surface"
+					href="https://github.com/NamesMark/Ukraine-split-screen"
+					target="_blank"
+					rel="noreferrer"
+				>
+					GitHub
+				</a>
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
