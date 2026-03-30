@@ -4,6 +4,12 @@
   let mapBottom: Microsoft.Maps.Map;
   let googleApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   let bingApiKey = import.meta.env.VITE_BING_MAPS_API_KEY;
+  let githubToken = import.meta.env.VITE_GITHUB_TOKEN;
+  let showSuggestModal = false;
+  let suggestName = '';
+  let suggestDescription = '';
+  let submitting = false;
+  let submitCooldown = false;
 
   function loadGoogleMapsAPI() {
     return new Promise((resolve) => {
@@ -115,6 +121,10 @@
     mapBottom.setView({center: new Microsoft.Maps.Location(lat, lng)});
     mapBottom.setView({zoom: zoom || 18});
   }
+
+  function saveScreenshot(): void {
+    // implemented in Task 5
+  }
 </script>
 
 <style>
@@ -123,28 +133,34 @@
   }
 </style>
 
-<div class = "flex w-full h-full">
-  <select class = "select w-1/4" size="5" value="1"
-  on:change="{(event) => {
-    const target = event.target;
-    const [lat, lng, zoom] = target.value.split(',').map(Number)||[47.09608780316091,37.548594984979225, 16];
-    goToLocation(lat, lng, zoom);
-  }}"
->
-  
-  <option disabled>Select a location:</option>
-  <option value="47.09608780316091,37.548594984979225">Drama theater</option>
-  <option value="47.13898178118376,37.48489740832877,16">Starokrymske cemetery</option>
-  <option value="47.11829043232631,37.50278803007427">Metro store bread line</option>
-  <option value="47.098173121798325,37.50222027265384,17">Epicentr K mall</option>
-  <option value="47.1271484,37.6859701,19">Child Clinic</option>
-  <option value="47.15182764443729,37.608116383840496,19">Maternity hospital</option>
-  <option value="47.0928687,37.5575726,19">History museum</option>
-  <option value="47.0934991,37.5507241,19">Kuindzhi museum</option>
-  <option value="50.58858316087714,30.209800244624148,16">Antonov airport (Hostomel)</option>
-  <option value="47.073021957525,37.29967261999493,18">350 unknown graves, some filled</option>
-  <option value="47.07496052993682,37.35484725751761,17">Firing positions</option>
-</select>
+<div class="flex w-full h-full">
+  <div class="flex flex-col w-1/4">
+    <select class="select" size="5" value="1"
+    on:change="{(event) => {
+      const target = event.target;
+      const [lat, lng, zoom] = target.value.split(',').map(Number)||[47.09608780316091,37.548594984979225, 16];
+      goToLocation(lat, lng, zoom);
+    }}"
+  >
+
+    <option disabled>Select a location:</option>
+    <option value="47.09608780316091,37.548594984979225">Drama theater</option>
+    <option value="47.13898178118376,37.48489740832877,16">Starokrymske cemetery</option>
+    <option value="47.11829043232631,37.50278803007427">Metro store bread line</option>
+    <option value="47.098173121798325,37.50222027265384,17">Epicentr K mall</option>
+    <option value="47.1271484,37.6859701,19">Child Clinic</option>
+    <option value="47.15182764443729,37.608116383840496,19">Maternity hospital</option>
+    <option value="47.0928687,37.5575726,19">History museum</option>
+    <option value="47.0934991,37.5507241,19">Kuindzhi museum</option>
+    <option value="50.58858316087714,30.209800244624148,16">Antonov airport (Hostomel)</option>
+    <option value="47.073021957525,37.29967261999493,18">350 unknown graves, some filled</option>
+    <option value="47.07496052993682,37.35484725751761,17">Firing positions</option>
+  </select>
+    <div class="flex flex-col gap-2 mt-4 w-full px-1">
+      <button class="btn btn-sm variant-filled-primary w-full" on:click={() => { showSuggestModal = true; }}>📍 Suggest Location</button>
+      <button class="btn btn-sm variant-filled-secondary w-full" id="screenshotBtn" on:click={saveScreenshot}>📸 Save Screenshot</button>
+    </div>
+  </div>
   <div class="flex flex-col w-full h-full justify-center items-center">
     <!-- Map container: -->
     <div id="mapTop" class="w-full h-1/2"></div>
