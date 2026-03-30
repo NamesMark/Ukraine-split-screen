@@ -13,7 +13,7 @@
 	},
 	"devDependencies": {
 		"@skeletonlabs/skeleton": "~1.2.5",
-		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/adapter-vercel": "^3.1.0",
 		"@sveltejs/kit": "^1.20.0",
 		"@tailwindcss/typography": "^0.5.9",
 		"@types/bingmaps": "^0.0.1",
@@ -35,8 +35,10 @@
 		"vite": "~4.3.0"
 	},
 	"type": "module",
+	"engines": {
+		"node": ">=18.x"
+	},
 	"dependencies": {
-		"@google/earthengine": "^0.1.350",
-		"html2canvas": "^1.4.1"
+		"@google/earthengine": "^0.1.350"
 	}
 }
