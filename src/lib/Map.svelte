@@ -19,32 +19,12 @@
   }
   function loadBingMapsAPI() {
   return new Promise((resolve) => {
+    (window as any).GetMap = () => resolve(true);
     const script = document.createElement("script");
     script.src = `https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=${bingApiKey}`;
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
-
-    const waitForMicrosoftMaps = () => {
-      if (typeof Microsoft !== "undefined" && typeof Microsoft.Maps.Map !== "undefined") {
-        resolve(true);
-      } else {
-        setTimeout(waitForMicrosoftMaps, 100);
-      }
-    };
-
-    waitForMicrosoftMaps();
-  });
-}
-
-  function waitForMicrosoftNamespace(): Promise<void> {
-  return new Promise<void>((resolve) => {
-    const interval = setInterval(() => {
-      if (typeof Microsoft !== "undefined") {
-        clearInterval(interval);
-        resolve();
-      }
-    }, 100);
   });
 }
 
@@ -54,7 +34,6 @@
     await loadGoogleMapsAPI();
     //console.log("Google Maps API loaded!");
     await loadBingMapsAPI();
-    await waitForMicrosoftNamespace();
     //console.log("Bing Maps API loaded!");
     initMaps();
   });
