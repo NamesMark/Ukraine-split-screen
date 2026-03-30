@@ -1,5 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { toastStore } from '@skeletonlabs/skeleton';
+  import type { ToastSettings } from '@skeletonlabs/skeleton';
   let mapTop: google.maps.Map;
   let mapBottom: Microsoft.Maps.Map;
   let googleApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -125,6 +127,50 @@
   function saveScreenshot(): void {
     // implemented in Task 5
   }
+
+  async function submitSuggestion(): Promise<void> {
+    if (!suggestName.trim()) return;
+    submitting = true;
+
+    const center = mapTop.getCenter();
+    const lat = center.lat();
+    const lng = center.lng();
+    const zoom = mapTop.getZoom();
+
+    const title = `📍 Location suggestion: ${suggestName.trim()}`;
+    const body = [
+      `**Coordinates:** ${lat}, ${lng}`,
+      `**Zoom:** ${zoom}`,
+      `**Description:** ${suggestDescription.trim() || 'N/A'}`,
+      `**Google Maps link:** https://www.google.com/maps/@${lat},${lng},${zoom}z`,
+    ].join('\n');
+
+    try {
+      const res = await fetch('https://api.github.com/repos/NamesMark/Ukraine-split-screen/issues', {
+        method: 'POST',
+        headers: {
+          'Authorization': `token ${githubToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, body, labels: ['location-suggestion'] }),
+      });
+
+      if (!res.ok) throw new Error(`GitHub API returned ${res.status}`);
+
+      const t: ToastSettings = { message: 'Location suggested! It will be reviewed shortly.', background: 'variant-filled-success' };
+      toastStore.trigger(t);
+      showSuggestModal = false;
+      suggestName = '';
+      suggestDescription = '';
+      submitCooldown = true;
+      setTimeout(() => { submitCooldown = false; }, 60000);
+    } catch (e) {
+      const t: ToastSettings = { message: 'Something went wrong. Please try again later.', background: 'variant-filled-error' };
+      toastStore.trigger(t);
+    } finally {
+      submitting = false;
+    }
+  }
 </script>
 
 <style>
@@ -169,4 +215,31 @@
 
 </div>
 
-  
+{#if showSuggestModal}
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" on:click|self={() => { showSuggestModal = false; }}>
+  <div class="card p-6 w-96 space-y-4">
+    <h3>Suggest a Location</h3>
+    <label class="label">
+      <span>Name *</span>
+      <input class="input" type="text" bind:value={suggestName} placeholder="e.g. Destroyed school" />
+    </label>
+    <label class="label">
+      <span>Description</span>
+      <textarea class="textarea" rows="3" bind:value={suggestDescription} placeholder="What happened here?"></textarea>
+    </label>
+    <p class="text-sm opacity-60">
+      Coordinates: {mapTop ? `${mapTop.getCenter().lat().toFixed(6)}, ${mapTop.getCenter().lng().toFixed(6)}` : '...'} | Zoom: {mapTop ? mapTop.getZoom() : '...'}
+    </p>
+    <div class="flex gap-2 justify-end">
+      <button class="btn variant-ghost-surface" on:click={() => { showSuggestModal = false; }}>Cancel</button>
+      <button
+        class="btn variant-filled-primary"
+        on:click={submitSuggestion}
+        disabled={submitting || submitCooldown || !suggestName.trim()}
+      >
+        {#if submitting}Submitting...{:else if submitCooldown}Wait 60s{:else}Submit{/if}
+      </button>
+    </div>
+  </div>
+</div>
+{/if}
