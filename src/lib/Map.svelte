@@ -124,8 +124,53 @@
     mapBottom.setView({zoom: zoom || 18});
   }
 
-  function saveScreenshot(): void {
-    // implemented in Task 5
+  async function saveScreenshot(): Promise<void> {
+    const center = mapTop.getCenter();
+    const lat = center.lat();
+    const lng = center.lng();
+    const zoom = mapTop.getZoom();
+
+    const t: ToastSettings = { message: 'Capturing screenshot...', background: 'variant-filled-surface' };
+    toastStore.trigger(t);
+
+    const width = 640;
+    const height = 400;
+
+    const googleUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=${width}x${height}&maptype=satellite&key=${googleApiKey}`;
+    const bingUrl = `/api/bing-static?lat=${lat}&lng=${lng}&zoom=${zoom}&w=${width}&h=${height}`;
+
+    try {
+      const loadImg = (url: string): Promise<HTMLImageElement> => new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = url;
+      });
+
+      const [googleImg, bingImg] = await Promise.all([loadImg(googleUrl), loadImg(bingUrl)]);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height * 2;
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(googleImg, 0, 0, width, height);
+      ctx.drawImage(bingImg, 0, height, width, height);
+
+      const ts = Date.now();
+      const filename = `ukraine-${lat.toFixed(4)}-${lng.toFixed(4)}-z${zoom}-${ts}.png`;
+
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+
+      const done: ToastSettings = { message: 'Screenshot saved!', background: 'variant-filled-success' };
+      toastStore.trigger(done);
+    } catch (e) {
+      const err: ToastSettings = { message: 'Screenshot capture failed. Check your Google Maps API key.', background: 'variant-filled-warning' };
+      toastStore.trigger(err);
+    }
   }
 
   async function submitSuggestion(): Promise<void> {
@@ -181,7 +226,7 @@
 
 <div class="flex w-full h-full">
   <div class="flex flex-col w-1/4">
-    <select class="select" size="5" value="1"
+    <select class="select" size="12" value="1"
     on:change="{(event) => {
       const target = event.target;
       const [lat, lng, zoom] = target.value.split(',').map(Number)||[47.09608780316091,37.548594984979225, 16];
