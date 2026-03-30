@@ -20,12 +20,9 @@
 	const donate: ModalSettings = {
 					type: 'alert',
 					title: 'Help Ukraine',
-					image: '/vilni_request.jpg',
-					body: '<p>Vilni Volunteers are collecting 27,000 USD to buy 9x DJI Mavic 3, 2x monoculars and a generator for 30th and 46th brigades stationed in Bakhmut. I\'m trying to help them, so if you like this website, donate to these awesome guys.</p>' 
-					+'<p class="my-4">💰Paypal: marynaboroda123@gmail.com</p>'
-					+ '<p class="content-center space-x-2 my-4"><a class="btn variant-ghost-tertiary" href = "https://send.monobank.ua/jar/X9BLcbXJu" target="_blank">Monobank jar</a>' 
-					+ '<a class="btn variant-ghost-tertiary" href = "https://www.instagram.com/p/Coribcstakg/" target="_blank">Learn more</a>'
-					+ '<a class="btn variant-ghost-surface" href = "https://linkpeak.io/l/helpukraine" target="_blank"">Other charities</a></p>', 
+					image: '/cba.jpg',
+					body: '<p>Come Back Alive is one of Ukraine\'s largest and most trusted defense charities. Since 2014, they\'ve been providing the Ukrainian military with drones, vehicles, medical supplies, and training. Every dollar goes directly to protecting lives on the front lines.</p>'
+					+ '<p class="content-center space-x-2 my-4"><a class="btn variant-filled-primary" href="https://savelife.in.ua/en/projects/status/active/" target="_blank">See active projects</a></p>',
 				  };
 
 
