@@ -13,6 +13,7 @@
   let submitting = false;
   let submitCooldown = false;
   let fullscreen = false;
+  let showLabels = false;
 
   function loadGoogleMapsAPI() {
     return new Promise((resolve) => {
@@ -123,6 +124,11 @@
     mapTop.setZoom(zoom || 18);
     mapBottom.setView({center: new Microsoft.Maps.Location(lat, lng)});
     mapBottom.setView({zoom: zoom || 18});
+  }
+
+  function toggleLabels(): void {
+    showLabels = !showLabels;
+    mapTop.setMapTypeId(showLabels ? 'hybrid' : 'satellite');
   }
 
   function toggleFullscreen(): void {
@@ -272,9 +278,10 @@
     <option value="47.07496052993682,37.35484725751761,17">Firing positions</option>
   </select>
     <div class="flex flex-col gap-2 mt-4 w-full px-1">
-      <button class="btn btn-sm variant-filled-primary w-full" on:click={() => { showSuggestModal = true; }}>📍 Suggest Location</button>
+      <button class="btn btn-sm variant-filled-primary w-full" on:click={() => { showSuggestModal = true; }}>Suggest Location</button>
       <button class="btn btn-sm variant-filled-secondary w-full" id="screenshotBtn" on:click={saveScreenshot}>📸 Save Screenshot</button>
-      <button class="btn btn-sm variant-filled-surface w-full" on:click={toggleFullscreen}>⛶ Fullscreen</button>
+      <button class="btn btn-sm variant-filled-tertiary w-full" on:click={toggleLabels}>{showLabels ? 'Hide' : 'Show'} Labels</button>
+      <button class="btn btn-sm variant-filled-surface w-full" on:click={toggleFullscreen}>Fullscreen</button>
     </div>
   </div>
   {/if}
