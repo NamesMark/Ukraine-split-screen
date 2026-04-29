@@ -292,6 +292,8 @@
     <option value="50.58858316087714,30.209800244624148,16">Antonov airport (Hostomel)</option>
     <option value="47.073021957525,37.29967261999493,18">350 unknown graves, some filled</option>
     <option value="47.07496052993682,37.35484725751761,17">Firing positions</option>
+    <option value="48.59617006237138,37.99740525528709,18">Bakhmut Intensive Care Hospital</option>
+    <option value="47.11589505454007,37.50751135491948,18">Destroyed PortCity</option>
   </select>
     <div class="flex flex-col gap-2 mt-4 w-full px-1">
       <button class="btn btn-sm variant-filled-primary w-full" on:click={() => { showSuggestModal = true; }}>Suggest Location</button>
