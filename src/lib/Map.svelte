@@ -247,6 +247,23 @@
     }
   }
 
+  function buildSnippet(name: string, lat: number, lng: number, zoom: number): string {
+    const safeName = (name || 'Unnamed').replace(/'/g, "\\'");
+    return `{ name: '${safeName}', lat: ${lat}, lng: ${lng}, zoom: ${zoom} },`;
+  }
+
+  async function copySnippet(): Promise<void> {
+    if (!mapTop) return;
+    const center = mapTop.getCenter();
+    const snippet = buildSnippet(suggestName.trim() || 'Unnamed', center.lat(), center.lng(), mapTop.getZoom());
+    try {
+      await navigator.clipboard.writeText(snippet);
+      toastStore.trigger({ message: 'Snippet copied to clipboard.', background: 'variant-filled-success' });
+    } catch {
+      toastStore.trigger({ message: 'Copy failed. Select and copy manually.', background: 'variant-filled-warning' });
+    }
+  }
+
   async function submitSuggestion(): Promise<void> {
     if (!suggestName.trim()) return;
     submitting = true;
@@ -257,17 +274,20 @@
     const zoom = mapTop.getZoom();
 
     const title = `📍 Location suggestion: ${suggestName.trim()}`;
-    const optionLine = `<option value="${lat},${lng},${zoom}">${suggestName.trim()}</option>`;
+    const snippet = buildSnippet(suggestName.trim(), lat, lng, zoom);
     const body = [
       `**Coordinates:** ${lat}, ${lng}`,
       `**Zoom:** ${zoom}`,
       `**Description:** ${suggestDescription.trim() || 'N/A'}`,
       `**Google Maps link:** https://www.google.com/maps/@${lat},${lng},${zoom}z`,
       ``,
-      `**Code to add to Map.svelte:**`,
-      '```html',
-      optionLine,
+      `<details><summary>Code to add to Map.svelte locationGroups</summary>`,
+      ``,
+      '```ts',
+      snippet,
       '```',
+      ``,
+      `</details>`,
     ].join('\n');
 
     try {
@@ -366,27 +386,39 @@
 
 {#if showSuggestModal}
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" on:click|self={() => { showSuggestModal = false; }}>
-  <div class="card p-6 w-96 space-y-4">
+  <div class="card p-6 w-[30rem] max-w-[95vw] space-y-4">
     <h3>Suggest a Location</h3>
     <label class="label">
       <span>Name *</span>
-      <input class="input" type="text" bind:value={suggestName} placeholder="e.g. Destroyed school" />
+      <input class="input px-3 py-2" type="text" bind:value={suggestName} placeholder="e.g. Destroyed school" />
     </label>
     <label class="label">
       <span>Description</span>
-      <textarea class="textarea" rows="3" bind:value={suggestDescription} placeholder="What happened here?"></textarea>
+      <textarea class="textarea px-3 py-2" rows="3" bind:value={suggestDescription} placeholder="What happened here?"></textarea>
     </label>
     <p class="text-sm opacity-60">
       Coordinates: {mapTop ? `${mapTop.getCenter().lat().toFixed(6)}, ${mapTop.getCenter().lng().toFixed(6)}` : '...'} | Zoom: {mapTop ? mapTop.getZoom() : '...'}
     </p>
+    {#if mapTop}
+      <details class="text-sm">
+        <summary class="cursor-pointer opacity-80 hover:opacity-100">Code snippet (click to expand)</summary>
+        <pre
+          class="mt-2 font-mono text-xs px-3 py-2 rounded bg-surface-700/40 hover:bg-surface-700/60 cursor-pointer select-all"
+          style="white-space: pre-wrap; word-break: break-all;"
+          title="Click to copy"
+          on:click={copySnippet}
+        >{buildSnippet(suggestName.trim() || 'Unnamed', mapTop.getCenter().lat(), mapTop.getCenter().lng(), mapTop.getZoom())}</pre>
+      </details>
+    {/if}
     <div class="flex gap-2 justify-end">
       <button class="btn variant-ghost-surface" on:click={() => { showSuggestModal = false; }}>Cancel</button>
+      <button class="btn variant-ghost-primary" on:click={copySnippet}>📋 Copy snippet</button>
       <button
         class="btn variant-filled-primary"
         on:click={submitSuggestion}
         disabled={submitting || submitCooldown || !suggestName.trim()}
       >
-        {#if submitting}Submitting...{:else if submitCooldown}Wait 60s{:else}Submit{/if}
+        {#if submitting}Submitting...{:else if submitCooldown}Wait 60s{:else}Submit issue{/if}
       </button>
     </div>
   </div>
