@@ -77,6 +77,12 @@
           showCopyright: false,
           showDashboard: false,
           showLocateMeButton: false,
+          showScalebar: false,
+          showZoomButtons: false,
+          disableBirdseye: true,
+          disableStreetside: true,
+          navigationBarMode: Microsoft.Maps.NavigationBarMode?.minified,
+          navigationBarOrientation: Microsoft.Maps.NavigationBarOrientation?.horizontal,
         };
         //console.log(bingMapOptions);
         mapBottom = new Microsoft.Maps.Map('#mapBottom', bingMapOptions);
@@ -250,6 +256,16 @@
 <style>
   select:focus {
     outline: none;
+  }
+  /* Hide Bing Maps navigation bar / map type selector overlay. */
+  :global(.NavBar_Container),
+  :global(.NavBar-Container),
+  :global(.MapTypeSelector),
+  :global(.MapTypeRoot),
+  :global(.ZoomControl),
+  :global([class*="NavBar"]),
+  :global([class*="MapTypeSelector"]) {
+    display: none !important;
   }
 </style>
 
