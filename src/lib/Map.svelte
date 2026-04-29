@@ -15,6 +15,39 @@
   let fullscreen = false;
   let showLabels = false;
 
+  type Loc = { name: string; lat: number; lng: number; zoom: number };
+  const locationGroups: { city: string; items: Loc[] }[] = [
+    {
+      city: 'Mariupol',
+      items: [
+        { name: 'Drama theater', lat: 47.09608780316091, lng: 37.548594984979225, zoom: 16 },
+        { name: 'Starokrymske cemetery', lat: 47.13898178118376, lng: 37.48489740832877, zoom: 16 },
+        { name: 'Metro store bread line', lat: 47.11829043232631, lng: 37.50278803007427, zoom: 16 },
+        { name: 'Epicentr K mall', lat: 47.098173121798325, lng: 37.50222027265384, zoom: 17 },
+        { name: 'Child Clinic', lat: 47.1271484, lng: 37.6859701, zoom: 19 },
+        { name: 'Maternity hospital', lat: 47.15182764443729, lng: 37.608116383840496, zoom: 19 },
+        { name: 'History museum', lat: 47.0928687, lng: 37.5575726, zoom: 19 },
+        { name: 'Kuindzhi museum', lat: 47.0934991, lng: 37.5507241, zoom: 19 },
+        { name: 'Destroyed PortCity', lat: 47.11589505454007, lng: 37.50751135491948, zoom: 18 },
+        { name: '350 unknown graves, some filled (Manhush)', lat: 47.073021957525, lng: 37.29967261999493, zoom: 18 },
+        { name: 'Firing positions (Manhush)', lat: 47.07496052993682, lng: 37.35484725751761, zoom: 17 },
+      ],
+    },
+    {
+      city: 'Bakhmut',
+      items: [
+        { name: 'Intensive Care Hospital', lat: 48.59617006237138, lng: 37.99740525528709, zoom: 18 },
+      ],
+    },
+    {
+      city: 'Hostomel',
+      items: [
+        { name: 'Antonov airport', lat: 50.58858316087714, lng: 30.209800244624148, zoom: 16 },
+      ],
+    },
+  ];
+  let expanded: Record<string, boolean> = { Mariupol: true };
+
   function loadGoogleMapsAPI() {
     return new Promise((resolve) => {
       const script = document.createElement("script");
@@ -272,29 +305,32 @@
 <div class="flex w-full h-full" class:fixed={fullscreen} class:inset-0={fullscreen} class:z-40={fullscreen}>
   {#if !fullscreen}
   <div class="flex flex-col w-1/4">
-    <select class="select" size="12" value="1"
-    on:change="{(event) => {
-      const target = event.target;
-      const [lat, lng, zoom] = target.value.split(',').map(Number)||[47.09608780316091,37.548594984979225, 16];
-      goToLocation(lat, lng, zoom);
-    }}"
-  >
-
-    <option disabled>Select a location:</option>
-    <option value="47.09608780316091,37.548594984979225">Drama theater</option>
-    <option value="47.13898178118376,37.48489740832877,16">Starokrymske cemetery</option>
-    <option value="47.11829043232631,37.50278803007427">Metro store bread line</option>
-    <option value="47.098173121798325,37.50222027265384,17">Epicentr K mall</option>
-    <option value="47.1271484,37.6859701,19">Child Clinic</option>
-    <option value="47.15182764443729,37.608116383840496,19">Maternity hospital</option>
-    <option value="47.0928687,37.5575726,19">History museum</option>
-    <option value="47.0934991,37.5507241,19">Kuindzhi museum</option>
-    <option value="50.58858316087714,30.209800244624148,16">Antonov airport (Hostomel)</option>
-    <option value="47.073021957525,37.29967261999493,18">350 unknown graves, some filled</option>
-    <option value="47.07496052993682,37.35484725751761,17">Firing positions</option>
-    <option value="48.59617006237138,37.99740525528709,18">Bakhmut Intensive Care Hospital</option>
-    <option value="47.11589505454007,37.50751135491948,18">Destroyed PortCity</option>
-  </select>
+    <div class="location-tree card p-2 overflow-y-auto" style="max-height: 24rem;">
+      {#each locationGroups as group}
+        <button
+          type="button"
+          class="group-header w-full text-left px-2 py-1 font-semibold hover:bg-surface-500/20 rounded"
+          on:click={() => { expanded[group.city] = !expanded[group.city]; expanded = expanded; }}
+        >
+          <span class="inline-block w-4">{expanded[group.city] ? '▼' : '▶'}</span>
+          {group.city}
+          <span class="opacity-60">({group.items.length})</span>
+        </button>
+        {#if expanded[group.city]}
+          <div class="pl-6">
+            {#each group.items as loc}
+              <button
+                type="button"
+                class="w-full text-left px-2 py-0.5 text-sm hover:bg-surface-500/20 rounded"
+                on:click={() => goToLocation(loc.lat, loc.lng, loc.zoom)}
+              >
+                {loc.name}
+              </button>
+            {/each}
+          </div>
+        {/if}
+      {/each}
+    </div>
     <div class="flex flex-col gap-2 mt-4 w-full px-1">
       <button class="btn btn-sm variant-filled-primary w-full" on:click={() => { showSuggestModal = true; }}>Suggest Location</button>
       <button class="btn btn-sm variant-filled-secondary w-full" id="screenshotBtn" on:click={saveScreenshot}>📸 Save Screenshot</button>
