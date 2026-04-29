@@ -28,7 +28,7 @@
         { name: 'Maternity hospital', lat: 47.15182764443729, lng: 37.608116383840496, zoom: 19 },
         { name: 'History museum', lat: 47.0928687, lng: 37.5575726, zoom: 19 },
         { name: 'Kuindzhi museum', lat: 47.0934991, lng: 37.5507241, zoom: 19 },
-        { name: 'Azovstal steelworks', lat: 47.0925, lng: 37.6131, zoom: 14 },
+        { name: 'Azovstal steelworks', lat: 47.10616800458803, lng: 37.60790300872176, zoom: 16 },
         { name: 'Destroyed PortCity', lat: 47.11589505454007, lng: 37.50751135491948, zoom: 18 },
         { name: '350 unknown graves, some filled (Manhush)', lat: 47.073021957525, lng: 37.29967261999493, zoom: 18 },
         { name: 'Firing positions (Manhush)', lat: 47.07496052993682, lng: 37.35484725751761, zoom: 17 },
