@@ -336,26 +336,26 @@
   }
 </style>
 
-<div class="flex w-full h-full" class:fixed={fullscreen} class:inset-0={fullscreen} class:z-40={fullscreen}>
+<div class="flex w-full h-full gap-4 p-3" class:fixed={fullscreen} class:inset-0={fullscreen} class:z-40={fullscreen} class:!p-0={fullscreen} class:!gap-0={fullscreen}>
   {#if !fullscreen}
-  <div class="flex flex-col w-1/4">
-    <div class="location-tree card p-2 overflow-y-auto" style="max-height: 24rem;">
+  <div class="flex flex-col w-1/4 gap-4">
+    <div class="location-tree card p-3 overflow-y-auto space-y-0.5" style="max-height: 24rem;">
       {#each locationGroups as group}
         <button
           type="button"
-          class="group-header w-full text-left px-2 py-1 font-semibold hover:bg-surface-500/20 rounded"
+          class="group-header w-full text-left px-3 py-1.5 font-semibold hover:bg-surface-500/20 rounded flex items-center gap-2"
           on:click={() => { expanded[group.city] = !expanded[group.city]; expanded = expanded; }}
         >
-          <span class="inline-block w-4">{expanded[group.city] ? '▼' : '▶'}</span>
-          {group.city}
-          <span class="opacity-60">({group.items.length})</span>
+          <span class="inline-block w-4 text-center opacity-60 text-xs">{expanded[group.city] ? '▾' : '▸'}</span>
+          <span>{group.city}</span>
+          <span class="opacity-60 text-sm">({group.items.length})</span>
         </button>
         {#if expanded[group.city]}
-          <div class="pl-6">
+          <div class="pl-9 pr-2 space-y-0.5 mb-1">
             {#each group.items as loc}
               <button
                 type="button"
-                class="w-full text-left px-2 py-0.5 text-sm hover:bg-surface-500/20 rounded"
+                class="w-full text-left px-2 py-1 text-sm hover:bg-surface-500/20 rounded leading-snug"
                 on:click={() => goToLocation(loc.lat, loc.lng, loc.zoom)}
               >
                 {loc.name}
@@ -365,7 +365,7 @@
         {/if}
       {/each}
     </div>
-    <div class="flex flex-col gap-2 mt-4 w-full px-1">
+    <div class="flex flex-col gap-2 w-full">
       <button class="btn btn-sm variant-filled-primary w-full" on:click={() => { showSuggestModal = true; }}>Suggest Location</button>
       <button class="btn btn-sm variant-filled-secondary w-full" id="screenshotBtn" on:click={saveScreenshot}>📸 Save Screenshot</button>
       <button class="btn btn-sm variant-filled-tertiary w-full" on:click={toggleLabels}>{showLabels ? 'Hide' : 'Show'} Labels</button>
